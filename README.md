@@ -35,12 +35,12 @@ _Data → Cleaning & EDA → Feature Engineering → Model Training → SQL Stor
 
 ---
 
-## 🖼 Dashboard  
+<!-- ## 🖼 Dashboard  
 
 ![Fraud Dashboard Screenshot](reports/figures/dashboard.png)  
 *(Add your Tableau/Power BI screenshot here)*  
 
----
+--- -->
 
 ## ⚙️ Tech Stack  
 
