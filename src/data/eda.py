@@ -1,42 +1,62 @@
-from pathlib import Path
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
+from pathlib import Path
 
 RAW = Path("data/raw/creditcard.csv")
-FIGDIR = Path("reports/figures")
-FIGDIR.mkdir(parents=True, exist_ok=True)
+OUT = Path("reports/figures")
+OUT.mkdir(parents=True, exist_ok=True)
 
 def main():
-    if not RAW.exists():
-        raise FileNotFoundError(f"Dataset not found at {RAW.resolve()}")
-
+    print("Loading dataset...")
     df = pd.read_csv(RAW)
-    print("Shape:", df.shape)
-    print("\nClass counts:\n", df["Class"].value_counts())
-    print("Fraud %:", round(100 * df["Class"].mean(), 4))
+    print(f"Shape: {df.shape}")
+    print(df['Class'].value_counts())
+    print("Fraud %:", 100 * df['Class'].mean())
 
-    # 1) Class balance
-    ax = df["Class"].value_counts().rename({0: "Non-Fraud", 1: "Fraud"}).plot(
-        kind="bar", title="Class Balance"
-    )
-    ax.set_ylabel("Count")
-    plt.tight_layout(); plt.savefig(FIGDIR / "01_class_balance.png"); plt.close()
+    # 1. Class Balance (Bar + Pie)
+    counts = df['Class'].value_counts().rename({0:'Non-Fraud',1:'Fraud'})
 
-    # 2) Amount distribution (fraud vs non-fraud)
     plt.figure()
-    df.loc[df.Class == 0, "Amount"].plot(kind="hist", bins=60, alpha=0.6, label="Non-Fraud")
-    df.loc[df.Class == 1, "Amount"].plot(kind="hist", bins=60, alpha=0.6, label="Fraud")
-    plt.legend(); plt.title("Amount Distribution"); plt.xlabel("Amount"); plt.ylabel("Count")
-    plt.tight_layout(); plt.savefig(FIGDIR / "02_amount_distribution.png"); plt.close()
+    counts.plot(kind='bar', log=True)
+    plt.title("Class Balance (log scale)")
+    plt.ylabel("Count (log)")
+    plt.savefig(OUT / "01_class_balance_log.png", dpi=160)
+    plt.close()
 
-    # 3) Fraud rate by hour
-    if "Time" in df.columns:
-        df["hour"] = (df["Time"] % (24 * 3600)) // 3600
-        ax = df.groupby("hour")["Class"].mean().plot(title="Fraud Rate by Hour")
-        ax.set_ylabel("Rate")
-        plt.tight_layout(); plt.savefig(FIGDIR / "03_fraud_rate_by_hour.png"); plt.close()
+    plt.figure()
+    counts.plot.pie(autopct="%.3f%%", labels=['Non-Fraud','Fraud'])
+    plt.title("Fraud vs Non-Fraud Distribution")
+    plt.ylabel("")
+    plt.savefig(OUT / "01_class_balance_pie.png", dpi=160)
+    plt.close()
 
-    print("Saved figures to:", FIGDIR.resolve())
+    # 2. Amount Distribution (log transform)
+    df['log_amount'] = np.log1p(df['Amount'])
+
+    plt.figure()
+    df[df['Class']==0]['log_amount'].plot(kind='hist', bins=50, alpha=0.6, label='Non-Fraud')
+    df[df['Class']==1]['log_amount'].plot(kind='hist', bins=50, alpha=0.6, label='Fraud')
+    plt.legend()
+    plt.title("Log-Transformed Amount Distribution")
+    plt.xlabel("log(Amount+1)")
+    plt.ylabel("Count")
+    plt.savefig(OUT / "02_amount_distribution_log.png", dpi=160)
+    plt.close()
+
+    # 3. Fraud Rate by Hour
+    df['hour'] = (df['Time'] % (24*3600)) // 3600
+    hr = df.groupby('hour')['Class'].mean()
+
+    plt.figure()
+    hr.plot()
+    plt.title("Fraud Rate by Hour")
+    plt.xlabel("Hour of Day")
+    plt.ylabel("Fraud Rate")
+    plt.savefig(OUT / "03_fraud_rate_by_hour.png", dpi=160)
+    plt.close()
+
+    print(f"Saved updated figures to {OUT.resolve()}")
 
 if __name__ == "__main__":
     main()
