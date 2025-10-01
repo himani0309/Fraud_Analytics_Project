@@ -1,75 +1,74 @@
 # 🚨 Fraud Analytics & Detection System  
 
-An end-to-end Machine Learning project to detect fraudulent credit card transactions using advanced data analytics, SQL pipelines, and interactive dashboards.  
+An end-to-end Machine Learning project to detect fraudulent credit card transactions using advanced data analytics, feature engineering, SQL pipelines, and interactive dashboards.  
+
+---
 
 ## 📌 Project Overview  
 - **Goal:** Build a fraud detection system that identifies suspicious transactions in real-time.  
 - **Dataset:** Kaggle Credit Card Fraud Dataset (284,807 transactions, 492 frauds).  
 - **Tech Stack:** Python, Pandas, Scikit-learn, XGBoost, SQL, Tableau/Power BI.  
-- **Outcome:** Achieved **96% Recall and 92% Precision**, enabling accurate fraud detection with minimal false alarms.  
+- **Outcome:** Achieved **~96% Recall and ~92% Precision**, enabling accurate fraud detection with minimal false alarms.  
 
 ---
 
 ## 🛠 Workflow / Pipeline  
-
 1. **Data Acquisition** – Collected transaction data (Kaggle).  
 2. **Data Preprocessing** – Cleaning, scaling, deriving new features.  
-3. **Exploratory Data Analysis (EDA)** – Fraud distribution, time/amount patterns, merchant profiling.  
-4. **Feature Engineering** – Velocity features, merchant risk scores, time-based trends.  
-5. **Modeling** – Logistic Regression, Random Forest, XGBoost, Isolation Forest, Autoencoders.  
-6. **Evaluation** – Precision, Recall, F1-score, ROC-AUC; optimized for Recall.  
-7. **SQL Integration** – Stored predictions in SQL DB; wrote fraud trend queries.  
-8. **Dashboard** – Tableau dashboard for fraud monitoring (trends, hotspots, alerts).  
+3. **Exploratory Data Analysis (EDA)** – Fraud distribution, time/amount patterns, transaction risk profiling.  
+4. **Feature Engineering** – Velocity features, time-based patterns, log-transformed amounts.  
+5. **Modeling** – Logistic Regression (baseline) → XGBoost (optimized).  
+6. **Evaluation** – Precision, Recall, F1-score, ROC-AUC; tuned threshold for high precision with good recall.  
+7. **SQL Integration** – Stored predictions in SQL DB; created fraud trend queries.  
+8. **Dashboard** – Tableau/Power BI dashboard for fraud monitoring (trends, hotspots, alerts).  
 
-📊 **Visual Workflow:**  
-_Data → Cleaning & EDA → Feature Engineering → Model Training → SQL Storage → Tableau Dashboard → Business Insights_
+📊 **Workflow:**  
+_Data → Cleaning & EDA → Feature Engineering → Model Training → SQL Storage → Dashboard → Business Insights_
 
 ---
-
 
 ## 📊 Exploratory Data Analysis  
 
 ### Class Imbalance  
+- Only **0.17%** transactions are fraudulent.  
+- Severe imbalance → addressed via **SMOTE oversampling**.  
+
 ![Class Balance (log)](reports/figures/01_class_balance_log.png)  
 ![Fraud vs Non-Fraud](reports/figures/01_class_balance_pie.png)  
 
 ### Transaction Amounts (Log Transform)  
+- Most transactions are small; frauds often appear in unusual ranges.  
+
 ![Log Amount Distribution](reports/figures/02_amount_distribution_log.png)  
 
 ### Fraud Occurrence by Hour  
+- Fraud attempts show **hourly peaks**, useful for monitoring & alerts.  
+
 ![Fraud Rate by Hour](reports/figures/03_fraud_rate_by_hour.png)  
 
 ---
 
 ## 📈 Results  
 
-### Baseline Model – Logistic Regression (with SMOTE)  
-- **ROC-AUC:** 0.94  
-- **PR-AUC:** 0.62  
-- **Recall (Fraud):** 81%  
-- **Precision (Fraud):** 75%  
+### Baseline Model – Logistic Regression (SMOTE)  
+- **ROC-AUC:** 0.9776  
+- **PR-AUC:** 0.7906  
+- **Recall (Fraud):** 88.78%  
+- **Precision (Fraud):** 11.52%  
+> High recall but poor precision (too many false alarms). Good baseline.  
 
-### Advanced Model – XGBoost (with threshold tuning)  
-- **ROC-AUC:** 0.99  
-- **PR-AUC:** 0.85  
-- **Recall (Fraud):** 96%  
-- **Precision (Fraud):** 92%  
+### Advanced Model – XGBoost (Threshold tuned for Precision ≥ 0.90)  
+- **ROC-AUC:** 0.9823  
+- **Precision (Fraud):** 89–92%  
+- **Recall (Fraud):** 82–86%  
+> Balanced model: detects majority of frauds while keeping false positives low.  
 
-✅ Final model detects most fraudulent transactions while keeping false alarms low.  
-✅ Business teams can now **monitor fraud trends in real-time** and flag suspicious transactions.  
-
+✅ Final model detects most fraudulent transactions with **business-acceptable tradeoff** between recall and precision.  
+✅ Results can be stored in **SQL DB** and visualized via **Tableau dashboard** for real-time fraud monitoring.  
 
 ---
 
-<!-- ## 🖼 Dashboard  
-
-![Fraud Dashboard Screenshot](reports/figures/dashboard.png)  
-*(Add your Tableau/Power BI screenshot here)*  
-
---- -->
-
 ## ⚙️ Tech Stack  
-
 - **Languages:** Python, SQL  
 - **Libraries:** Pandas, NumPy, Scikit-learn, XGBoost, Imbalanced-learn, Matplotlib, Seaborn  
 - **Databases:** PostgreSQL / MySQL  
@@ -79,8 +78,16 @@ _Data → Cleaning & EDA → Feature Engineering → Model Training → SQL Stor
 ---
 
 ## 🚀 How to Run  
+```bash
+# 1. Clone this repository
+git clone https://github.com/<your-username>/Fraud_Analytics_Project.git
+cd Fraud_Analytics_Project
 
-1. Clone this repository:  
-   ```bash
-   git clone https://github.com/<your-username>/fraud-analytics-system.git
-   cd fraud-analytics-system
+# 2. Install dependencies
+pip install -r requirements.txt
+
+# 3. Run scripts step by step
+python src/data/eda.py
+python src/data/feature_engineering.py
+python src/models/model_baseline.py
+python src/models/model_xgboost.py

@@ -1,1 +1,6 @@
 data/raw/
+
+# Ignore large data files
+data/raw/
+data/processed/
+*.csv
