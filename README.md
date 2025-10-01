@@ -26,12 +26,38 @@ _Data → Cleaning & EDA → Feature Engineering → Model Training → SQL Stor
 
 ---
 
+
+## 📊 Exploratory Data Analysis  
+
+### Class Imbalance  
+![Class Balance (log)](reports/figures/01_class_balance_log.png)  
+![Fraud vs Non-Fraud](reports/figures/01_class_balance_pie.png)  
+
+### Transaction Amounts (Log Transform)  
+![Log Amount Distribution](reports/figures/02_amount_distribution_log.png)  
+
+### Fraud Occurrence by Hour  
+![Fraud Rate by Hour](reports/figures/03_fraud_rate_by_hour.png)  
+
+---
+
 ## 📈 Results  
 
-- Trained multiple models; **XGBoost delivered best performance**.  
-- **Recall:** 96% (most fraud cases caught)  
-- **Precision:** 92% (low false alarms)  
-- Business teams can now **monitor fraud trends in real time**.  
+### Baseline Model – Logistic Regression (with SMOTE)  
+- **ROC-AUC:** 0.94  
+- **PR-AUC:** 0.62  
+- **Recall (Fraud):** 81%  
+- **Precision (Fraud):** 75%  
+
+### Advanced Model – XGBoost (with threshold tuning)  
+- **ROC-AUC:** 0.99  
+- **PR-AUC:** 0.85  
+- **Recall (Fraud):** 96%  
+- **Precision (Fraud):** 92%  
+
+✅ Final model detects most fraudulent transactions while keeping false alarms low.  
+✅ Business teams can now **monitor fraud trends in real-time** and flag suspicious transactions.  
+
 
 ---
 
