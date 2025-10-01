@@ -1,6 +1,9 @@
-data/raw/
-
-# Ignore large data files
+# Ignore big data files
 data/raw/
 data/processed/
-*.csv
+
+# Ignore only big CSVs in data/
+data/*.csv
+
+# But DO NOT ignore CSVs inside reports/
+!reports/*.csv
