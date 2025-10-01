@@ -1,0 +1,10 @@
+cat > requirements.txt << 'EOF'
+pandas
+numpy
+scikit-learn
+imbalanced-learn
+xgboost
+matplotlib
+seaborn
+jupyterlab
+EOF
